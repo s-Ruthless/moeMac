@@ -1,0 +1,261 @@
+/* ============================================
+   pages.css — 其他页面专用样式
+   包含：关于页、友链页、豆瓣书影音、
+         404页面、文章墙、分类/标签页
+   ============================================ */
+
+/* ====== 文章墙 ====== */
+.wall-header{margin-bottom:20px;}
+.wall-header h2{font-size:20px;font-weight:600;color:#111;margin-bottom:12px;}
+.wall-filter{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;}
+.filter-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:6px 14px;border-radius:10px;border:none;cursor:pointer;
+  font-size:12px;font-weight:400;line-height:1;
+  background:rgba(255,255,255,0.5);color:#444;
+  backdrop-filter:blur(10px);transition:background 0.2s ease,color 0.2s ease;
+  font-family:inherit;white-space:nowrap;vertical-align:middle;
+}
+.filter-btn:hover{background:color-mix(in srgb,var(--accent-color) 15%,transparent);color:var(--accent-color);}
+.filter-btn.active{background:color-mix(in srgb,var(--accent-color) 20%,transparent);color:var(--accent-color);font-weight:600;}
+/* 分类筛选按钮内的数字徽章 — 与首页分类窗口统一配色 */
+.filter-btn .badge{
+  background:color-mix(in srgb,var(--accent-color) 10%,transparent);
+  color:var(--accent-color);margin-left:2px;
+}
+.filter-btn:hover .badge{
+  background:color-mix(in srgb,var(--accent-color) 18%,transparent);color:var(--accent-color);
+}
+.filter-btn.active .badge{
+  background:var(--accent-color);color:#fff;
+}
+.wall-grid{column-count:4;column-gap:16px;}
+.wall-card{
+  position:relative;
+  background:var(--card-bg);
+  border:var(--card-border);border-radius:16px;
+  padding:16px;cursor:pointer;overflow:hidden;
+  box-shadow:var(--card-shadow);
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s ease,border-color 0.3s ease,background 0.3s ease;
+  break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;
+  margin-bottom:16px;display:inline-block;width:100%;
+  transform:translateZ(0);will-change:transform;
+}
+.wall-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent-color),#ec4899);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.wall-card::after{
+  content:'';position:absolute;right:-30px;top:-30px;width:80px;height:80px;
+  border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent-color) 12%,transparent),transparent 70%);
+  opacity:0;transition:opacity 0.35s ease;pointer-events:none;
+}
+.wall-card:hover{
+transform:translateY(-6px) scale(1.02) translateZ(0);
+box-shadow:0 16px 40px rgba(0,0,0,0.12),0 4px 12px color-mix(in srgb,var(--accent-color) 10%,transparent);
+border-color:color-mix(in srgb,var(--accent-color) 30%,transparent);
+background:color-mix(in srgb,var(--accent-color) 3%,var(--card-bg));
+}
+.wall-card:hover::before{transform:scaleX(1);}
+.wall-card:hover::after{opacity:1;}
+.wall-card.hidden{display:none;}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.card-cat{font-size:11px;color:var(--accent-color);background:color-mix(in srgb,var(--accent-color) 10%,transparent);padding:2px 8px;border-radius:6px;}
+.card-date{font-size:11px;color:#444;}
+.card-title{font-size:14px;font-weight:600;color:#111;margin-bottom:6px;line-height:1.4;}
+.card-summary{font-size:12px;color:#444;line-height:1.5;margin-bottom:8px;}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.card-tag{font-size:11px;color:#444;background:rgba(0,0,0,0.04);padding:2px 6px;border-radius:4px;}
+@media(max-width:1200px){.wall-grid{column-count:3;}}
+@media(max-width:768px){.wall-grid{column-count:2;}}
+@media(max-width:480px){.wall-grid{column-count:1;}}
+
+/* ====== 关于页 ====== */
+.about-card{
+  backdrop-filter:var(--card-blur);-webkit-backdrop-filter:var(--card-blur);
+  background:var(--card-bg);border:var(--card-border);border-radius:20px;
+  padding:32px;text-align:center;
+  box-shadow:var(--card-shadow),inset 0 1px 0 rgba(255,255,255,0.5);
+}
+.about-ava{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:600;color:var(--accent-color);
+  background:linear-gradient(135deg,#f0e6ff,#e0f0ff);overflow:hidden;
+}
+.about-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.about-name{font-size:20px;font-weight:600;color:#111;margin-bottom:8px;}
+.about-desc{font-size:14px;color:#444;line-height:1.8;margin-bottom:20px;}
+.about-content{font-size:14px;color:#444;line-height:1.8;text-align:left;}
+
+/* ====== 友链页 ====== */
+.links-header h2{font-size:20px;font-weight:600;color:#111;margin-bottom:16px;}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.link-card{
+  display:flex;align-items:center;gap:12px;
+  backdrop-filter:var(--card-blur);-webkit-backdrop-filter:var(--card-blur);
+  background:var(--card-bg);border:var(--card-border);border-radius:14px;
+  padding:14px;cursor:pointer;transition:transform 0.25s ease,box-shadow 0.25s ease,border-color 0.25s ease;
+  box-shadow:var(--card-shadow);
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.link-card:hover{transform:translateY(-2px) translateZ(0);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.link-ava{width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.link-info{min-width:0;}
+.link-name{font-size:14px;font-weight:600;color:#111;}
+.link-desc{font-size:12px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ====== 分类/标签页 ====== */
+.cat-page h2,.tag-page h2{font-size:20px;font-weight:600;color:#111;margin-bottom:16px;}
+
+/* ====== 豆瓣书影音 ====== */
+.douban-section{margin-bottom:36px;}
+.douban-sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.douban-sec-head h3{font-size:18px;font-weight:600;color:#111;margin:0;}
+.douban-sec-head i{color:var(--accent-color);}
+.douban-count{font-size:12px;color:var(--accent-color);background:color-mix(in srgb,var(--accent-color) 12%,transparent);padding:2px 10px;border-radius:8px;font-weight:600;}
+.douban-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.douban-card{
+  position:relative;display:flex;gap:14px;padding:14px;border-radius:14px;
+  background:var(--card-bg);border:var(--card-border);
+  backdrop-filter:var(--card-blur);-webkit-backdrop-filter:var(--card-blur);
+  box-shadow:var(--card-shadow);transition:box-shadow 0.3s ease,border-color 0.3s ease,background 0.3s ease;
+  overflow:hidden;
+}
+.douban-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--accent-color),#ec4899);
+  transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.douban-card:hover{
+  box-shadow:0 8px 28px rgba(0,0,0,0.08),0 0 0 1px color-mix(in srgb,var(--accent-color) 12%,transparent);
+  border-color:color-mix(in srgb,var(--accent-color) 30%,transparent);
+  background:color-mix(in srgb,var(--accent-color) 3%,var(--card-bg));
+}
+.douban-card:hover::before{transform:scaleY(1);transform-origin:top;}
+.douban-cover{
+  width:80px;height:112px;flex-shrink:0;border-radius:8px;overflow:hidden;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent-color) 12%,transparent),rgba(236,72,153,0.12));
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.douban-cover img{
+width:100%;height:100%;object-fit:cover;
+transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+transform:scale(1) translateZ(0);
+-webkit-backface-visibility:hidden;backface-visibility:hidden;
+will-change:transform;
+}
+.douban-card:hover .douban-cover img{transform:scale(1.1) translateZ(0);}
+.douban-cover::after{
+  content:'';position:absolute;inset:0;border-radius:8px;
+  background:linear-gradient(135deg,transparent 60%,color-mix(in srgb,var(--accent-color) 25%,transparent));
+  opacity:0;transition:opacity 0.3s ease;pointer-events:none;
+}
+.douban-card:hover .douban-cover::after{opacity:1;}
+.douban-cover-ph{color:color-mix(in srgb,var(--accent-color) 40%,transparent);font-size:24px;}
+.douban-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.douban-name{font-size:15px;font-weight:600;color:#111;margin:0;line-height:1.4;}
+.douban-original-name{font-size:12px;color:#444;margin:0 0 2px;line-height:1.3;}
+.douban-meta{font-size:11px;color:#888;margin:0;line-height:1.4;}
+.douban-rating{display:flex;align-items:center;gap:6px;margin:2px 0;}
+.douban-stars{font-size:11px;letter-spacing:1px;}
+.douban-stars .star-on{color:#fbbf24;}
+.douban-stars .star-off{color:rgba(0,0,0,0.12);}
+.douban-score{font-size:11px;color:#444;font-weight:600;}
+.douban-date{font-size:11px;color:#444;}
+.douban-date i{margin-right:4px;}
+.douban-note{font-size:12px;color:#444;line-height:1.5;margin:4px 0 0;}
+.douban-link{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-top:auto;padding:3px 12px;
+  font-size:11px;font-weight:600;
+  color:#fff;background:var(--accent-color);
+  border-radius:8px;text-decoration:none;
+  transition:gap 0.2s ease,opacity 0.2s ease,box-shadow 0.2s ease;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+  align-self:flex-start;
+}
+.douban-link:hover{gap:8px;opacity:0.88;box-shadow:0 2px 8px color-mix(in srgb,var(--accent-color) 40%,transparent);}
+.douban-link i{font-size:9px;}
+.douban-empty{text-align:center;padding:50px 20px;color:#444;}
+.douban-empty i{font-size:36px;color:color-mix(in srgb,var(--accent-color) 30%,transparent);margin-bottom:12px;}
+.douban-empty p{font-size:15px;color:#444;margin-bottom:6px;}
+.douban-empty span{font-size:12px;color:#666;}
+.douban-empty code{background:color-mix(in srgb,var(--accent-color) 10%,transparent);color:var(--accent-color);padding:1px 6px;border-radius:4px;font-size:11px;}
+
+/* ====== 404 页面 ====== */
+.not-found-page{max-width:600px;text-align:center;padding-top:8vh;}
+.not-found-card{
+  backdrop-filter:var(--card-blur);-webkit-backdrop-filter:var(--card-blur);
+  background:var(--card-bg);border:var(--card-border);border-radius:24px;
+  box-shadow:var(--card-shadow),inset 0 1px 0 rgba(255,255,255,0.5);
+  padding:48px 32px;
+}
+.not-found-code{
+  font-size:72px;font-weight:800;line-height:1;color:var(--accent-color);
+  display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:16px;
+}
+.not-found-code .nf-emoji{font-size:56px;animation:nf-bounce 2s ease-in-out infinite;}
+@keyframes nf-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.not-found-title{font-size:22px;font-weight:600;color:#111;margin-bottom:10px;}
+.not-found-desc{font-size:14px;color:#444;line-height:1.8;margin-bottom:24px;}
+.not-found-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.not-found-actions .btn{display:inline-flex;align-items:center;gap:6px;}
+
+/* ====== 其他页面暗黑模式 ====== */
+[data-theme="dark"] .about-name,
+[data-theme="dark"] .links-header h2,
+[data-theme="dark"] .wall-header h2,
+[data-theme="dark"] .cat-page h2,
+[data-theme="dark"] .tag-page h2,
+[data-theme="dark"] .douban-sec-head h3,
+[data-theme="dark"] .douban-name,
+[data-theme="dark"] .link-name,
+[data-theme="dark"] .not-found-title{color:#ffffff;}
+
+[data-theme="dark"] .about-content,
+[data-theme="dark"] .about-desc,
+[data-theme="dark"] .douban-note,
+[data-theme="dark"] .link-desc{color:#e0e0e0;}
+
+[data-theme="dark"] .card-summary,
+[data-theme="dark"] .douban-score,
+[data-theme="dark"] .not-found-desc{color:#d8d8d8;}
+
+[data-theme="dark"] .card-date,
+[data-theme="dark"] .card-tag,
+[data-theme="dark"] .douban-original-name,
+[data-theme="dark"] .douban-meta,
+[data-theme="dark"] .douban-date,
+[data-theme="dark"] .douban-empty,
+[data-theme="dark"] .douban-empty p,
+[data-theme="dark"] .douban-empty span{color:#c8c8c8;}
+
+[data-theme="dark"] .card-tag{background:rgba(255,255,255,0.1);color:#c8c8c8;}
+[data-theme="dark"] .filter-btn .badge{background:color-mix(in srgb,var(--accent-color) 15%,transparent);color:#fff;}
+[data-theme="dark"] .filter-btn.active .badge{background:var(--accent-color);color:#fff;}
+[data-theme="dark"] .douban-card{background:var(--card-bg);border-color:rgba(255,255,255,0.14);}
+[data-theme="dark"] .douban-stars .star-off{color:rgba(255,255,255,0.2);}
+
+/* ====== 全局滚动条：完全隐藏，保留滚动功能 ====== */
+/* 覆盖 DaisyUI 的 *{scrollbar-color} 规则 */
+* {
+  scrollbar-width: none !important;              /* Firefox */
+  -ms-overflow-style: none !important;            /* IE/Edge */
+}
+::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;                       /* Chrome/Safari/Edge */
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}

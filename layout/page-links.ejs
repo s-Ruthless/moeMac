@@ -1,0 +1,32 @@
+<%
+  var _icon = 'fas fa-link';
+  var _path = (page.path || '').replace(/\/index\.html$/, '').replace(/^\/|\/$/g, '');
+  (theme.dock || []).forEach(function(item){
+    if ((item.page || '').replace(/^\/|\/$/g, '') === _path) _icon = item.icon;
+  });
+%>
+<div class="page-container">
+  <div class="page-body">
+    <div class="page-header">
+      <h2><i class="<%- _icon %>"></i> <%= page.title || '友链' %></h2>
+    </div>
+    <div class="page-content">
+    <% var friends = theme.friends || []; %>
+    <% if (friends.length > 0) { %>
+      <div class="links-grid">
+        <% friends.forEach(function(f) { %>
+          <a href="<%= f.url %>" target="_blank" rel="noopener" class="link-card">
+            <img src="<%= f.avatar %>" alt="<%= f.name %>" class="link-ava" onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(f.name) %>&background=random'">
+            <div class="link-info">
+              <div class="link-name"><%= f.name %></div>
+              <div class="link-desc"><%= f.description || '' %></div>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+    <div class="article-content"><%- page.content %></div>
+    <%- partial('_partial/comments') %>
+    </div>
+  </div>
+</div>

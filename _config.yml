@@ -1,0 +1,208 @@
+# moeMac 主题配置
+
+# ====== 基本信息 ======
+blog_name: "山野自愈 · 人间理想"
+blog_description: "随心记录生活碎片，收纳日常热爱<br>一隅小窗，藏尽平凡美好"
+author: "屿"
+
+# ====== 头像 ======
+# avatar_type: "image" 显示图片头像，"text" 显示文字头像
+# avatar_url: 图片地址，支持网络URL或本地路径（如 /images/avatar.png）
+# avatar_text: 文字头像显示的文字（仅 avatar_type 为 text 时生效）
+avatar_type: "image"
+avatar_url: "https://q1.qlogo.cn/g?b=qq&nk=2502393029&s=100"
+avatar_text: "屿"
+
+# ====== SEO / 站点元信息 ======
+# favicon: 自定义 favicon 路径，留空则使用 favicon_emoji 的 emoji 图标
+# favicon_emoji: 默认 emoji favicon
+# og_image: 默认社交分享图（留空用头像）
+# keywords: 站点关键词
+# twitter: 推特账号（@xxx），可选
+favicon: ""
+favicon_emoji: "🌿"
+og_image: ""
+keywords: "博客,生活,技术,随笔"
+twitter: ""
+
+# ====== 主题色 ======
+accent_color: "#c0504d"
+
+# ====== 静态资源 CDN ======
+# 所有静态资源按类型统一放在 source/assets/ 下：
+#   assets/css/   — 所有 CSS（主题 + 第三方）
+#   assets/js/    — 所有 JS（主题 + 第三方）
+#   assets/fonts/ — 所有字体（SF Pro + FontAwesome webfonts）
+#
+# 留空 = 使用本地 /assets/ 路径
+# 填写后所有资源自动走 CDN（末尾不加 /）
+# 使用方法：
+#   1. 将 source/assets/ 目录整体上传到你的 CDN/OSS
+#   2. 在此填写 CDN 中 assets 目录的完整 URL
+#   例如: cdn: "https://your-cdn.com/moemac/assets"
+#   或:   cdn: "https://cdn.jsdelivr.net/gh/user/repo/assets"
+cdn: ""
+
+# ====== 一言 / 每日一句 ======
+# hitokoto: true 启用一言 API，首页实时获取；false 使用下方 sentences 列表随机显示
+# hitokoto_api: 一言 API 地址（可自定义，默认使用官方接口）
+# sentences: 静态句子列表（hitokoto 为 false 或 API 失败时使用）
+hitokoto: true
+hitokoto_api: "https://v1.hitokoto.cn/"
+sentences:
+  - "生活明朗，万物可爱。"
+  - "愿你眼中有光，心中有爱。"
+  - "把日子过成诗，简单而精致。"
+  - "温柔半两，从容一生。"
+  - "今日份的好运正在派送中……"
+  - "慢慢来，谁还没有一个光明的未来。"
+  - "所有的不期而遇，都在路上。"
+  - "保持热爱，奔赴山海。"
+
+# ====== 音乐歌单 ======
+# meting_api: Meting API 地址（支持网易云/QQ/酷狗等）
+#   - 公共 API（可能限流）：https://api.injahow.cn/meting/
+#   - 自建 API（推荐）：https://your-domain.com/meting/
+#   - 本地 API：http://localhost:3000/meting/
+#
+# platform: 音乐平台（netease / tencent / kugou / xiami / baidu）
+# playlist_id: 歌单ID
+# show_desktop_lyrics: 是否在 dock 栏上方显示桌面歌词
+meting_api: "https://api.moeyao.cn/meting/"
+platform: "netease"
+playlist_id: "18117638485"
+show_desktop_lyrics: true
+
+# ====== Dock 导航栏 ======
+# icon: Font Awesome 图标类名
+# label: 显示名称
+# page: 页面路径
+# type: "page" 站内页面，"link" 外部链接
+dock:
+  - { icon: "fas fa-house", label: "首页", page: "/", type: "page" }
+  - { icon: "fas fa-newspaper", label: "文章", page: "/posts/", type: "page" }
+  - { icon: "fas fa-folder-open", label: "归档", page: "/archives/", type: "page" }
+  - { icon: "fas fa-images", label: "相册", page: "/gallery/", type: "page" }
+  - { icon: "fas fa-book", label: "豆瓣", page: "/douban/", type: "page" }
+  - { icon: "fas fa-link", label: "友链", page: "/links/", type: "page" }
+  - { icon: "fas fa-heart", label: "关于", page: "/about/", type: "page" }
+
+# ====== 首页 ======
+# home_windows: 首页显示的浮动窗口（按顺序排列，可随意增删和调整顺序）
+#   posts      — 最新文章窗口（显示 recent_posts_count 篇文章）
+#   categories — 分类窗口（显示所有分类及文章数）
+#   tags       — 标签云窗口（显示所有标签）
+#   music      — 音乐窗口（加载歌单播放器）
+#   data       — 站点数据窗口（文章/分类/标签总数等统计）
+#   info       — 网站信息窗口（备案号、建站天数、版权等）
+# recent_posts_count: 最新文章窗口显示的文章数量
+home_windows:
+  - "posts"
+  - "categories"
+  - "tags"
+  - "music"
+  - "data"
+  - "info"
+recent_posts_count: 5
+
+# ====== 网站信息（info 窗口） ======
+# icp: ICP备案号（留空则不显示，点击跳转工信部）
+# psbc: 公安备案号（留空则不显示，点击跳转公安备案网站）
+# start_date: 建站日期（用于计算建站天数，格式 YYYY-MM-DD）
+# copyright: 版权声明文字
+site_info:
+  icp: "备icp124341245"
+  psbc: "网备11515"
+  start_date: "2023-01-01"
+  copyright: "@2026"
+
+# ====== 友链 ======
+friends:
+  - { name: "Hexo", url: "https://hexo.io", avatar: "https://hexo.io/favicon.ico", description: "快速、简洁且高效的博客框架" }
+  - { name: "Theme Landscape", url: "https://github.com/hexojs/hexo-theme-landscape", avatar: "https://github.githubassets.com/favicons/favicon.svg", description: "Hexo 默认主题" }
+
+# ====== 文章页 ======
+# show_toc: 显示文章目录
+# show_date: 显示发布日期
+# copyright: 显示版权声明（单篇文章可在 front-matter 中写 copyright: false 关闭）
+post:
+  show_toc: true
+  show_date: true
+  copyright: true
+
+# ====== 豆瓣书影音 ======
+# 两种方式二选一：
+#
+# 【方式 A】自动抓取（推荐）
+#   填 user_id 后，运行 npx hexo douban 抓取，或开启 auto_sync 让 hexo g 自动触发
+#   数据保存到 source/_data/douban.json，页面优先读取该文件
+#
+# 【方式 B】手动配置
+#   不填 user_id，直接在下方 books/movies/music 写死数据
+#   适合不想抓取、只需展示几条固定的场景
+#
+# 两者可共存：有 douban.json 时优先用抓取数据，没有则回退到下方手动配置
+douban:
+  # --- 方式 A：自动抓取 ---
+  user_id: "sjl511"                # 豆瓣 ID（douban.com/people/xxx/ 中的 xxx），留空则不抓取
+  auto_sync: true           # true: hexo g 时自动抓取（距上次超过 sync_interval_hours 才执行，不用手动跑命令）
+  sync_interval_hours: 0    # 自动同步间隔（小时），0 = 每次 hexo g 都同步
+  cookie: ""                 # 可选，登录 cookie（访问受限页面时需要）
+
+  # --- 方式 B：手动配置（回退数据） ---
+  # 每项: name/cover/rating(1-10)/date/note，rating 为 10 分制自动换算成 5 星
+  books:
+    - { name: "被讨厌的勇气", cover: "https://img1.doubanio.com/view/subject/l/public/s29492583.jpg", rating: 9, date: "2026-06-15", note: "自我启发的心理学，读完豁然开朗" }
+  movies:
+    - { name: "你好，李焕英", cover: "https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2626524982.jpg", rating: 9, date: "2026-05-01", note: "笑着笑着就哭了" }
+  music:
+    - { name: "山野自愈", cover: "https://p1.music.126.net/img.jpg", rating: 8, date: "2026-06-01", note: "治愈系歌单循环一整天" }
+
+# ====== 壁纸设置 ======
+# wallpaper_path: 自定义壁纸图片路径，为空则使用默认渐变
+# 示例: "/assets/images/my-bg.jpg" 或 "https://example.com/bg.jpg"
+wallpaper_path: "https://img.netbian.com/file/2024/0525/001431sFPe6.jpg"
+
+# ====== 评论系统 ======
+# enable: false 关闭；true 开启
+# provider: waline / twikoo / giscus / gitalk
+# 各 provider 的配置见下方对应字段，按需填写其一
+#
+# 页面级开关：在文章/页面的 front-matter 中添加 comment: true/false
+#   文章（post）：默认显示评论，写 comment: false 可关闭
+#   自定义页面（page）：默认不显示，写 comment: true 可开启
+comments:
+  enable: true
+  provider: "giscus"
+  # Waline: https://waline.js.org/
+  waline:
+    serverURL: "https://waline-demo.vercel.app"
+  # Twikoo: https://twikoo.js.org/
+  twikoo:
+    envId: ""               # 腾讯云环境ID 或自建地址
+  # Giscus: https://giscus.app/
+  # inputPosition: top 评论框在上 / bottom 评论框在下
+  # reactionsEnabled: 1 开启表情反应 / 0 关闭
+  # 主题会根据站点暗黑模式自动切换 noborder_dark / noborder_light，无需手动配置
+  giscus:
+    repo: "s-Ruthless/moeMac-comments"                # owner/repo
+    repoId: "R_kgDOTPRTtA"
+    category: "Announcements"
+    categoryId: "DIC_kwDOTPRTtM4DAnxQ"
+    mapping: "pathname"
+    inputPosition: "top"
+    theme: "preferred_color_scheme"
+    reactionsEnabled: 0
+  # Gitalk: https://github.com/gitalk/gitalk
+  gitalk:
+    clientID: ""
+    clientSecret: ""
+    repo: ""
+    owner: ""
+    admin: [""]
+
+# ====== 搜索 ======
+# 需安装 hexo-generator-searchdb 插件：npm i hexo-generator-searchdb
+# search: true 开启站内搜索 UI（基于站点 _config.yml 中插件生成的 search.xml）
+# 注意：此处仅控制 UI 显示，插件配置在站点 _config.yml 的 search 字段中
+search: true

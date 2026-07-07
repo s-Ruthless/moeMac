@@ -1,0 +1,196 @@
+/* ============================================
+   home.css �?首页桌面窗口专用样式
+   包含：Hero区、文章列表、分类、标签云�?
+         数据窗口、音乐窗口、hover增强
+   ============================================ */
+
+/* ====== Hero �?====== */
+.hero-ava{
+  width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:600;color:var(--accent-medium);
+  background:linear-gradient(135deg,#f0e6ff,#e0f0ff);margin:0 auto 12px;
+  overflow:hidden;flex-shrink:0;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.4s ease;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.hero-ava:hover{transform:scale(1.08) translateZ(0);box-shadow:0 8px 24px color-mix(in srgb,var(--accent-color) 25%,transparent);}
+.hero-ava-img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.hero-text{text-align:center;}
+.hero-text h2{font-size:22px;font-weight:600;color:#111;margin-bottom:8px;letter-spacing:0.5px;}
+.hero-text p{font-size:14px;color:#444;line-height:1.7;margin-bottom:12px;}
+.hero-hitokoto{font-size:13px;color:#555;line-height:1.6;padding:8px 12px;background:color-mix(in srgb,var(--accent-color) 6%,transparent);border-radius:10px;margin-top:40px;}
+.hero-hitokoto-text{color:#444;}
+.hero-hitokoto-from{font-size:11px;color:#666;}
+
+/* ====== 文章列表（最新文章窗口） ====== */
+.post-item{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+  transition:background 0.25s cubic-bezier(0.4,0,0.2,1),transform 0.25s cubic-bezier(0.4,0,0.2,1);cursor:pointer;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.post-item:hover{background:color-mix(in srgb,var(--accent-color) 8%,transparent);transform:translateX(4px) translateZ(0);}
+.post-item .post-dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent-soft),var(--rose-soft));
+}
+.post-item .post-info{flex:1;min-width:0;}
+.post-item .post-title{font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.post-item:hover .post-title{color:var(--accent-color);}
+.post-item .post-date{font-size:11px;color:#444;margin-top:2px;}
+
+/* 首页窗口内的文章列表 */
+.art-item{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:10px;transition:background 0.2s ease;cursor:pointer;
+}
+.art-item:hover{background:color-mix(in srgb,var(--accent-color) 8%,transparent);}
+.art-item h4{font-size:13px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
+.art-item h4:hover{color:var(--accent-color);}
+.art-item span{font-size:11px;color:#444;flex-shrink:0;}
+
+/* ====== 分类（首页窗�?+ 分类页） ====== */
+.cat-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;border-radius:10px;transition:background 0.2s ease;cursor:pointer;
+}
+.cat-item:hover{background:color-mix(in srgb,var(--accent-color) 8%,transparent);}
+.cat-item:hover .cat-name{color:var(--accent-color);}
+.cat-name{font-size:13px;color:#111;font-weight:500;}
+.cat-count{font-size:11px;color:var(--accent-color);background:color-mix(in srgb,var(--accent-color) 10%,transparent);padding:2px 8px;border-radius:8px;}
+.cat-item:hover .cat-count{background:color-mix(in srgb,var(--accent-color) 18%,transparent);color:var(--accent-color);}
+
+/* 首页分类窗口 */
+.cat-box{display:flex;flex-direction:column;gap:4px;}
+.cat-box .cat-item{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;
+  transition:background 0.25s cubic-bezier(0.4,0,0.2,1),transform 0.25s cubic-bezier(0.4,0,0.2,1);cursor:pointer;font-size:13px;color:#111;font-weight:500;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.cat-box .cat-item:hover{background:color-mix(in srgb,var(--accent-color) 8%,transparent);transform:translateX(4px) translateZ(0);}
+.cat-box .cat-item i{color:var(--accent-color);font-size:12px;}
+.cat-box .cat-item span{flex:1;}
+.cat-box .cat-item em{font-style:normal;font-size:11px;color:var(--accent-color);background:color-mix(in srgb,var(--accent-color) 10%,transparent);padding:1px 7px;border-radius:8px;}
+
+/* ====== 标签�?====== */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0;}
+.tag-cloud .tag{
+  padding:4px 10px;border-radius:10px;font-size:12px;
+  background:color-mix(in srgb,var(--accent-color) 8%,transparent);color:#444;
+  transition:background 0.2s ease,color 0.2s ease,transform 0.2s ease,box-shadow 0.2s ease;cursor:pointer;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.tag-cloud .tag:hover{background:color-mix(in srgb,var(--accent-color) 18%,transparent);color:var(--accent-medium);transform:translateY(-2px) translateZ(0);box-shadow:0 4px 12px color-mix(in srgb,var(--accent-color) 15%,transparent);}
+
+/* 首页标签云窗�?*/
+.tag-box{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;}
+.tag-box .tag{
+  display:inline-block;padding:4px 10px;border-radius:10px;font-size:12px;
+  background:color-mix(in srgb,var(--accent-color) 8%,transparent);color:#111;
+  transition:background 0.2s ease,color 0.2s ease,transform 0.2s ease,box-shadow 0.2s ease;cursor:pointer;text-decoration:none;
+  font-family:inherit;letter-spacing:0.3px;font-weight:500;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.tag-box .tag:hover{background:color-mix(in srgb,var(--accent-color) 15%,transparent);color:var(--accent-color);transform:translateY(-2px) translateZ(0);box-shadow:0 4px 12px color-mix(in srgb,var(--accent-color) 15%,transparent);}
+.tag-box .tag-xl,.tag-box .tag-lg,.tag-box .tag-md,.tag-box .tag-sm,.tag-box .tag-xs{font-size:12px;color:#111;}
+
+/* ====== 数据窗口 → 3列网格 ====== */
+.window-data .win-body{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.data-item{
+  display:flex!important;flex-direction:column;align-items:center;
+  padding:12px 8px!important;border-radius:12px;border:none!important;
+  background:color-mix(in srgb,var(--accent-color) 6%,transparent);
+  font-size:12px!important;gap:4px;
+  transition:background 0.2s ease,transform 0.2s ease;
+  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.data-item:hover{
+  background:color-mix(in srgb,var(--accent-color) 10%,transparent);
+  transform:translateY(-2px) translateZ(0);
+}
+.data-item span:first-child{font-size:11px;color:#888;order:2;}
+.data-item span:last-child{font-size:18px;font-weight:700;color:var(--accent-color);order:1;}
+.data-item:nth-child(4){grid-column:span 2;}
+.data-item:nth-child(5){grid-column:span 1;}
+
+/* ====== 网站信息窗口 → 居中列表 ====== */
+.info-list{display:block;width:100%;}
+.info-item{
+  position:relative;display:block;text-align:center;
+  padding:7px 4px;border-bottom:1px solid rgba(0,0,0,0.04);font-size:12px;
+  transition:background 0.2s ease,border-radius 0.2s ease;
+}
+.info-item:last-child{border-bottom:none;}
+.info-item:hover{background:color-mix(in srgb,var(--accent-color) 8%,transparent);border-radius:8px;}
+.info-item i{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  color:var(--accent-color);font-size:12px;width:14px;text-align:center;
+}
+.info-item span{color:#444;}
+.info-item em{font-style:normal;color:#111;font-weight:600;}
+.info-item a{color:var(--accent-color);text-decoration:none;font-weight:500;}
+.info-item a:hover{text-decoration:underline;}
+.window-info .win-body{
+  display:block!important;padding:14px 16px!important;
+}
+
+/* ====== 音乐窗口 ====== */
+.window-music .win-body{padding:4px 8px 8px;}
+#music-window-mount{width:100%;}
+.window-music .aplayer.aplayer{
+  min-height:auto!important;background:transparent!important;
+  box-shadow:none!important;border:none!important;margin:0!important;
+}
+.window-music .aplayer .aplayer-body{background:transparent!important;}
+.window-music .aplayer .aplayer-info{background:transparent!important;border:none!important;}
+.window-music .aplayer .aplayer-list{background:transparent!important;border:none!important;}
+.window-music .aplayer .aplayer-list ol{background:transparent!important;}
+.aplayer .aplayer-pic .aplayer-play svg,
+.aplayer .aplayer-pic .aplayer-pause svg{
+  position:absolute!important;top:50%!important;left:50%!important;
+  transform:translate(-50%,-50%)!important;
+}
+.aplayer .aplayer-list ol li .aplayer-list-index,
+.aplayer .aplayer-list ol li .aplayer-list-title,
+.aplayer .aplayer-list ol li .aplayer-list-author{color:inherit!important;}
+
+/* ====== 首页暗黑模式 ====== */
+[data-theme="dark"] .hero-text h2,
+[data-theme="dark"] .post-item .post-title,
+[data-theme="dark"] .art-item h4,
+[data-theme="dark"] .cat-box .cat-item,
+[data-theme="dark"] .cat-name,
+[data-theme="dark"] .tag-box .tag,
+[data-theme="dark"] .tag-box .tag-xl,
+[data-theme="dark"] .tag-box .tag-lg,
+[data-theme="dark"] .tag-box .tag-md,
+[data-theme="dark"] .tag-box .tag-sm,
+[data-theme="dark"] .tag-box .tag-xs,
+[data-theme="dark"] .data-item span:last-child,
+[data-theme="dark"] .info-item em,
+[data-theme="dark"] .tag-cloud .tag{color:#ffffff;}
+
+[data-theme="dark"] .hero-text p,
+[data-theme="dark"] .hero-hitokoto-text,
+[data-theme="dark"] .cat-box .cat-item span,
+[data-theme="dark"] .data-item span:first-child,
+[data-theme="dark"] .data-label,
+[data-theme="dark"] .info-item span{color:#d0d0d0;}
+
+[data-theme="dark"] .hero-hitokoto,
+[data-theme="dark"] .hero-hitokoto-from{color:#d8d8d8;}
+
+[data-theme="dark"] .post-item .post-date,
+[data-theme="dark"] .art-item span,
+[data-theme="dark"] .cat-count,
+[data-theme="dark"] .cat-box .cat-item em{color:#c8c8c8;}
+
+[data-theme="dark"] .hero-hitokoto{background:color-mix(in srgb,var(--accent-color) 10%,transparent);}
+[data-theme="dark"] .hero-ava{background:linear-gradient(135deg,color-mix(in srgb,var(--accent-color) 20%,transparent),color-mix(in srgb,var(--accent-color) 15%,transparent));}
+[data-theme="dark"] .tag-box .tag,
+[data-theme="dark"] .tag-cloud .tag{background:color-mix(in srgb,var(--accent-color) 12%,transparent);}
+[data-theme="dark"] .cat-count,
+[data-theme="dark"] .cat-box .cat-item em{background:color-mix(in srgb,var(--accent-color) 15%,transparent);}
+[data-theme="dark"] .data-item{background:color-mix(in srgb,var(--accent-color) 8%,rgba(255,255,255,0.03));}
+[data-theme="dark"] .info-item{border-bottom-color:rgba(255,255,255,0.08);}

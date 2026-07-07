@@ -1,0 +1,204 @@
+<%
+  var posts = site.posts.sort('date', -1);
+  var totalPosts = site.posts.length;
+  var totalCategories = site.categories.length;
+  var totalTags = site.tags.length;
+
+  // 按年份统计
+  var yearMap = {};
+  posts.each(function(post) {
+    var y = date(post.date, 'YYYY');
+    yearMap[y] = (yearMap[y] || 0) + 1;
+  });
+  var years = Object.keys(yearMap).sort().reverse();
+  var maxCount = Math.max.apply(null, Object.values(yearMap));
+
+  // 按年份分组文章（避免在循环中开关 div）
+  var yearGroups = {};
+  var yearOrder = [];
+  posts.each(function(post) {
+    var y = date(post.date, 'YYYY');
+    if (!yearGroups[y]) {
+      yearGroups[y] = [];
+      yearOrder.push(y);
+    }
+    yearGroups[y].push(post);
+  });
+%>
+
+<%
+  var _icon = 'fas fa-box-archive';
+  var _path = (page.path || '').replace(/\/index\.html$/, '').replace(/^\/|\/$/g, '');
+  (theme.dock || []).forEach(function(item){
+    if ((item.page || '').replace(/^\/|\/$/g, '') === _path) _icon = item.icon;
+  });
+%>
+<div class="page-container">
+  <div class="page-body archive-page">
+    <div class="page-header">
+      <h2><i class="<%- _icon %>"></i> 归档</h2>
+      <p class="archive-subtitle">共 <%= totalPosts %> 篇文章 · <%= totalCategories %> 个分类 · <%= totalTags %> 个标签</p>
+    </div>
+    <div class="page-content">
+    <!-- 统计看板 -->
+    <div class="archive-stats">
+      <!-- 三宫格数字卡片 -->
+      <div class="stat-hero-row">
+        <div class="stat-hero-card stat-hero-posts">
+          <div class="stat-hero-icon"><i class="fas fa-file-lines"></i></div>
+          <div class="stat-hero-body">
+            <span class="stat-hero-num"><%= totalPosts %></span>
+            <span class="stat-hero-label">篇文章</span>
+          </div>
+        </div>
+        <div class="stat-hero-card stat-hero-cats">
+          <div class="stat-hero-icon"><i class="fas fa-folder-tree"></i></div>
+          <div class="stat-hero-body">
+            <span class="stat-hero-num"><%= totalCategories %></span>
+            <span class="stat-hero-label">个分类</span>
+          </div>
+        </div>
+        <div class="stat-hero-card stat-hero-tags">
+          <div class="stat-hero-icon"><i class="fas fa-hashtag"></i></div>
+          <div class="stat-hero-body">
+            <span class="stat-hero-num"><%= totalTags %></span>
+            <span class="stat-hero-label">个标签</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 年度文章统计 -->
+      <div class="stat-chart-full">
+        <div class="stat-title"><i class="fas fa-chart-line"></i> 年度文章统计</div>
+        <%
+          /* 计算折线图坐标 */
+          var chartW = 600, chartH = 160, padX = 40, padY = 30;
+          var innerW = chartW - padX * 2, innerH = chartH - padY * 2;
+          var sortedYears = years.slice().sort(); /* 正序：旧→新 */
+          var yearCount = sortedYears.length;
+          var stepX = yearCount > 1 ? innerW / (yearCount - 1) : 0;
+          var points = sortedYears.map(function(y, i) {
+            var x = padX + (yearCount > 1 ? i * stepX : innerW / 2);
+            var v = yearMap[y];
+            var vy = maxCount > 0 ? v / maxCount : 0;
+            var py = padY + innerH - vy * innerH;
+            return { x: x, y: py, year: y, count: v };
+          });
+          /* 折线路径 */
+          var linePath = points.map(function(p) { return (p === points[0] ? 'M' : 'L') + p.x + ',' + p.y; }).join(' ');
+          /* 填充区域路径（折线下方到底部） */
+          var areaPath = linePath + ' L' + points[points.length-1].x + ',' + (padY + innerH) + ' L' + points[0].x + ',' + (padY + innerH) + ' Z';
+        %>
+        <div class="chart-line-wrap">
+          <svg class="chart-line-svg" viewBox="0 0 <%= chartW %> <%= chartH %>" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--accent-color)" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="var(--accent-color)" stop-opacity="0.02"/>
+              </linearGradient>
+              <linearGradient id="chartLineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="var(--accent-color)"/>
+                <stop offset="100%" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+            <!-- 水平网格线 -->
+            <% for (var g = 0; g <= 2; g++) { var gy = padY + (innerH / 2) * g; %>
+            <line x1="<%= padX %>" y1="<%= gy %>" x2="<%= chartW - padX %>" y2="<%= gy %>" stroke="rgba(0,0,0,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
+            <% } %>
+            <!-- 填充区域 -->
+            <path d="<%= areaPath %>" fill="url(#chartAreaGrad)"/>
+            <!-- 折线 -->
+            <path d="<%= linePath %>" fill="none" stroke="url(#chartLineGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 数据点 -->
+            <% points.forEach(function(p) { %>
+            <g class="chart-point" data-year="<%= p.year %>" data-count="<%= p.count %>">
+              <circle cx="<%= p.x %>" cy="<%= p.y %>" r="5" fill="#fff" stroke="var(--accent-color)" stroke-width="2.5"/>
+              <text x="<%= p.x %>" y="<%= p.y - 12 %>" text-anchor="middle" class="chart-point-count"><%= p.count %></text>
+              <text x="<%= p.x %>" y="<%= padY + innerH + 18 %>" text-anchor="middle" class="chart-point-label"><%= p.year %></text>
+            </g>
+            <% }); %>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 文章列表区 — 按年份分组渲染，结构清晰无歧义 -->
+    <div class="archive-list">
+      <% yearOrder.forEach(function(y) { %>
+        <div class="archive-year-section" id="year-<%= y %>">
+          <div class="archive-year-header" data-year="<%= y %>">
+            <div class="archive-year-label">
+              <span class="year-label-text"><%= y %></span>
+              <span class="year-post-count"><%= yearGroups[y].length %> 篇</span>
+            </div>
+            <i class="fas fa-chevron-down year-toggle-icon"></i>
+          </div>
+          <div class="archive-year-content" id="year-content-<%= y %>">
+            <% yearGroups[y].forEach(function(post) { %>
+              <%
+                var m = date(post.date, 'MM');
+                var d = date(post.date, 'DD');
+              %>
+              <div class="archive-row ajax-link" data-href="<%- url_for(post.path) %>">
+                <span class="row-date"><%= m %>-<%= d %></span>
+                <a class="row-title ajax-link" data-href="<%- url_for(post.path) %>"><%= post.title %></a>
+                <% if (post.categories && post.categories.length > 0) { %>
+                  <span class="row-cat"><%= post.categories.first().name %></span>
+                <% } %>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% }); %>
+
+      <% if (totalPosts === 0) { %>
+        <div class="archive-empty">还没有文章哦~</div>
+      <% } %>
+    </div>
+
+    <script>
+      /* toggleYear 定义 — ArchiveFold.init() 也会定义全局版本，这里作为 fallback */
+      if (typeof window.toggleYear !== 'function') {
+        window.toggleYear = function (year) {
+          var content = document.getElementById('year-content-' + year);
+          var header = document.querySelector('#year-' + year + ' .archive-year-header');
+          var icon = document.querySelector('#year-' + year + ' .year-toggle-icon');
+          if (!content) return;
+          
+          // 更可靠的展开状态检测：检查header是否有expanded类，或者内容是否可见
+          var isExpanded = header && header.classList.contains('expanded');
+          
+          if (!isExpanded) {
+            content.style.maxHeight = '2000px';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+            if (header) header.classList.add('expanded');
+          } else {
+            content.style.maxHeight = '0';
+            if (icon) icon.style.transform = 'rotate(-90deg)';
+            if (header) header.classList.remove('expanded');
+          }
+        };
+      }
+      
+      /* 确保页面加载时，所有年份都是折叠的 */
+      document.addEventListener('DOMContentLoaded', function() {
+        var headers = document.querySelectorAll('.archive-year-header');
+        var icons = document.querySelectorAll('.year-toggle-icon');
+        
+        headers.forEach(function(header) {
+          header.classList.remove('expanded');
+        });
+        
+        icons.forEach(function(icon) {
+          icon.style.transform = 'rotate(-90deg)';
+        });
+        
+        var contents = document.querySelectorAll('.archive-year-content');
+        contents.forEach(function(content) {
+          content.style.maxHeight = '0';
+        });
+      });
+    </script>
+    </div>
+  </div>
+</div>

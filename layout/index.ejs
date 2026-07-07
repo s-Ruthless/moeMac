@@ -1,0 +1,65 @@
+<% var windows = theme.home_windows || ['posts','categories','tags','music','data']; %>
+<% var winClassMap = { posts:'window-article', categories:'window-categories', tags:'window-tag', music:'window-music', data:'window-data', info:'window-info' }; %>
+<% var winTitleMap = { posts:'最新文章', categories:'分类', tags:'标签云', music:'歌单', data:'站点数据', info:'网站信息' }; %>
+<% var winIconMap = { posts:'fas fa-newspaper', categories:'fas fa-folder', tags:'fas fa-tags', music:'fas fa-music', data:'fas fa-chart-bar', info:'fas fa-circle-info' }; %>
+<% var useImageAvatar = theme.avatar_type === 'image' && theme.avatar_url; %>
+
+<div class="app-window window-main drag-win" id="win-hero" style="left:50%;top:50%;">
+  <div class="win-traffic">
+    <button class="win-traffic-btn win-btn-close" data-tip="关闭" aria-label="关闭"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 3L9 9M9 3L3 9"/></svg></button>
+    <button class="win-traffic-btn win-btn-minimize" data-tip="最小化" aria-label="最小化"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 6H9"/></svg></button>
+    <button class="win-traffic-btn win-btn-pin" data-tip="置顶" aria-label="置顶"><svg viewBox="0 0 12 12" fill="#fff"><path d="M6 1L4 3v3L2.5 7.5V9h3V11h1V9h3V7.5L8 6V3L6 1z"/></svg></button>
+  </div>
+  <div class="win-head drag-bar">
+    <div class="win-name"><i class="fas fa-house win-head-icon"></i>我的主页</div>
+  </div>
+  <div class="win-body">
+    <div class="hero-ava" id="hero-avatar">
+      <% if (useImageAvatar) { %>
+        <img src="<%= theme.avatar_url %>" alt="avatar" class="hero-ava-img" onerror="this.parentElement.innerHTML='<%= theme.avatar_text || '我' %>'">
+      <% } else { %>
+        <%= theme.avatar_text || '我' %>
+      <% } %>
+    </div>
+    <div class="hero-text">
+      <h2><%= theme.blog_name || config.title %></h2>
+      <p><%- theme.blog_description || config.description %></p>
+      <div class="hero-hitokoto">
+        <% if (theme.hitokoto !== false) { %>
+        <span class="hero-hitokoto-text" id="hitokoto-text" data-api="<%= theme.hitokoto_api || 'https://v1.hitokoto.cn/' %>">「加载中...」</span>
+        <% } else { var sList = theme.sentences || ['生活明朗，万物可爱。']; var sRand = sList[Math.floor(Math.random() * sList.length)]; %>
+        <span class="hero-hitokoto-text" id="hitokoto-text">「<%= sRand %>」</span>
+        <% } %>
+        <span class="hero-hitokoto-from" id="hitokoto-from"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% windows.forEach(function(w) { %>
+<div class="app-window <%= winClassMap[w] || 'window-article' %> drag-win" id="win-<%= w %>">
+  <div class="win-traffic">
+    <button class="win-traffic-btn win-btn-close" data-tip="关闭" aria-label="关闭"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 3L9 9M9 3L3 9"/></svg></button>
+    <button class="win-traffic-btn win-btn-minimize" data-tip="最小化" aria-label="最小化"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 6H9"/></svg></button>
+    <button class="win-traffic-btn win-btn-pin" data-tip="置顶" aria-label="置顶"><svg viewBox="0 0 12 12" fill="#fff"><path d="M6 1L4 3v3L2.5 7.5V9h3V11h1V9h3V7.5L8 6V3L6 1z"/></svg></button>
+  </div>
+  <div class="win-head drag-bar">
+    <div class="win-name"><i class="<%= winIconMap[w] || 'fas fa-window-maximize' %> win-head-icon"></i><%= winTitleMap[w] || w %></div>
+  </div>
+  <div class="win-body">
+    <% if (w === 'posts') { %>
+      <%- partial('_partial/window-posts') %>
+    <% } else if (w === 'categories') { %>
+      <%- partial('_partial/window-categories') %>
+    <% } else if (w === 'tags') { %>
+      <%- partial('_partial/window-tags') %>
+    <% } else if (w === 'music') { %>
+      <div id="music-window-mount"></div>
+    <% } else if (w === 'data') { %>
+      <%- partial('_partial/window-data') %>
+    <% } else if (w === 'info') { %>
+      <%- partial('_partial/window-info') %>
+    <% } %>
+  </div>
+</div>
+<% }); %>

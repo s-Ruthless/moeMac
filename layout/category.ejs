@@ -1,0 +1,37 @@
+<%
+  var cat = page.category;
+  var posts = page.posts.sort('date', -1);
+%>
+<div class="page-container">
+  <div class="page-body">
+    <div class="page-header">
+      <h2><i class="fas fa-folder"></i> 分类 · <span class="badge badge-primary badge-sm"><%= cat %></span></h2>
+    </div>
+    <div class="page-content">
+    <div class="list-container">
+    <% posts.each(function(post) { %>
+      <div class="list-card ajax-link" data-href="<%- url_for(post.path) %>">
+        <div class="list-card-body row">
+          <span class="badge badge-ghost badge-sm"><%= date(post.date, 'MM-DD') %></span>
+          <a class="list-card-title ajax-link" data-href="<%- url_for(post.path) %>"><%= post.title %></a>
+        </div>
+      </div>
+    <% }); %>
+    </div>
+    <% if (posts.length === 0) { %>
+      <div class="list-empty">该分类下还没有文章～</div>
+    <% } %>
+    <% if (typeof page.total !== 'undefined' && page.total > 1) { %>
+      <div class="list-pagination">
+        <% if (page.prev) { %>
+          <a class="page-btn ajax-link" data-href="<%- url_for(page.prev_link) %>"><i class="fas fa-chevron-left"></i> 上一页</a>
+        <% } %>
+        <span class="page-info"><%= page.current %> / <%= page.total %></span>
+        <% if (page.next) { %>
+          <a class="page-btn ajax-link" data-href="<%- url_for(page.next_link) %>">下一页 <i class="fas fa-chevron-right"></i></a>
+        <% } %>
+      </div>
+    <% } %>
+    </div>
+  </div>
+</div>

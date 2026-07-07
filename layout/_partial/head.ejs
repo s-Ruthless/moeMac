@@ -1,0 +1,95 @@
+<%
+  /* cdn 配置：留空 = 使用本地 /assets/ 路径；填写后所有资源走 CDN
+     例如: cdn: "https://your-cdn.com/moemac/assets"
+     末尾不加 / — 统一拼接路径 */
+  var A = (theme.cdn || '') + '/assets';
+  var pageDesc = strip_html(page.description || page.excerpt || config.description || '');
+  var ogTitle = page.title ? page.title + ' | ' + config.title : config.title;
+  var ogUrl = (config.url ? config.url.replace(/\/$/,'') : '') + url_for(page.path);
+  var ogImage = page.cover || theme.og_image || theme.avatar_url || '';
+  var accent = theme.accent_color || '#a78bfa';
+  var favicon = theme.favicon || ('data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">' + (theme.favicon_emoji || '🌿') + '</text></svg>'));
+%>
+<!DOCTYPE html>
+<html lang="<%= config.language || 'zh-CN' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title><%= ogTitle %></title>
+  <meta name="description" content="<%= pageDesc %>">
+  <% if (config.keywords || theme.keywords) { %><meta name="keywords" content="<%= config.keywords || theme.keywords %>"><% } %>
+  <meta name="author" content="<%= config.author || theme.author || '' %>">
+  <meta name="theme-color" content="<%= accent %>">
+
+  <!-- favicon -->
+  <link rel="icon" href="<%= favicon %>">
+  <link rel="apple-touch-icon" href="<%= theme.apple_touch_icon || favicon %>">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="<%= page.layout === 'post' ? 'article' : 'website' %>">
+  <meta property="og:title" content="<%= page.title || config.title %>">
+  <meta property="og:description" content="<%= pageDesc %>">
+  <meta property="og:url" content="<%= ogUrl %>">
+  <meta property="og:site_name" content="<%= config.title %>">
+  <% if (ogImage) { %><meta property="og:image" content="<%= ogImage %>"><% } %>
+  <% if (page.date) { %><meta property="article:published_time" content="<%= date(page.date, 'YYYY-MM-DDTHH:mm:ss') %>"><% } %>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="<%= ogImage ? 'summary_large_image' : 'summary' %>">
+  <meta name="twitter:title" content="<%= page.title || config.title %>">
+  <meta name="twitter:description" content="<%= pageDesc %>">
+  <% if (ogImage) { %><meta name="twitter:image" content="<%= ogImage %>"><% } %>
+  <% if (theme.twitter) { %><meta name="twitter:site" content="<%= theme.twitter %>"><% } %>
+
+  <!-- 第三方库 CSS + 组件库 -->
+  <% var V = '?v=20260729'; %>
+  <link rel="stylesheet" href="<%= A %>/css/icons.css">
+  <link rel="stylesheet" href="<%= A %>/css/APlayer.min.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="<%= A %>/css/components.css<%= V %>">
+
+  <!-- 主题色注入 -->
+  <style>
+    :root{
+      --accent-color:<%= accent %>;
+      --accent-soft:<%= accent %>;
+      --accent-medium:<%= accent %>;
+      --accent-strong:<%= accent %>;
+      --accent-gradient:linear-gradient(135deg,<%= accent %>,#06b6d4);
+    }
+  </style>
+
+  <!-- 早期主题初始化：在所有 CSS/JS 之前从 localStorage 读取暗黑模式偏好，
+       避免 FOUC（内容闪烁）和 Giscus 加载时主题不匹配 -->
+  <script>
+    (function(){
+      var saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      /* 移动端检测：尽早设置 is-mobile class，避免桌面布局闪烁 */
+      var isMobile = window.matchMedia('(max-width: 768px)').matches || window.innerWidth <= 768;
+      if (isMobile) {
+        document.documentElement.classList.add('is-mobile');
+      }
+    })();
+  </script>
+
+  <!-- 卜算子访客统计 -->
+  <script async src="<%= A %>/js/busuanzi.pure.mini.js"></script>
+
+  <!-- Giscus 评论预连接（提前建立 TCP/TLS，减少脚本加载握手耗时） -->
+  <% if (theme.comments && theme.comments.enable && theme.comments.provider === 'giscus' && theme.comments.giscus && theme.comments.giscus.repo) { %>
+  <link rel="preconnect" href="https://giscus.app" crossorigin>
+  <link rel="dns-prefetch" href="https://giscus.app">
+  <% } %>
+
+  <!-- 主题 CSS -->
+  <link rel="stylesheet" href="<%= A %>/css/style.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/home.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/article.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/archive.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/gallery.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/pages.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/mobile.css<%= V %>">
+  <link rel="stylesheet" href="<%= A %>/css/aplayer.css<%= V %>">
+</head>

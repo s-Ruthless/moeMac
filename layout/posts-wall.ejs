@@ -1,0 +1,61 @@
+<%
+  var posts = site.posts.sort('date', -1);
+  var cats = site.categories;
+  var _icon = 'fas fa-newspaper';
+  var _path = (page.path || '').replace(/\/index\.html$/, '').replace(/^\/|\/$/g, '');
+  (theme.dock || []).forEach(function(item){
+    if ((item.page || '').replace(/^\/|\/$/g, '') === _path) _icon = item.icon;
+  });
+%>
+
+<div class="page-container">
+  <div class="page-body">
+    <div class="page-header">
+      <h2><i class="<%- _icon %>"></i> 全部文章 · <span class="badge badge-primary badge-sm"><%= site.posts.length %></span> 篇</h2>
+    </div>
+    <div class="page-content">
+    <div class="wall-filter">
+      <button class="filter-btn active" data-cat="all">全部</button>
+      <% cats.sort('name').each(function(cat) { %>
+        <button class="filter-btn" data-cat="<%= cat.name %>"><%= cat.name %> <span class="badge badge-xs"><%= cat.posts.length %></span></button>
+      <% }); %>
+    </div>
+    <div class="wall-grid" id="posts-wall-grid">
+    <% var sizes = ['card-sm','card-md','card-lg','card-md','card-sm','card-xl','card-md','card-sm','card-lg','card-md','card-sm','card-lg']; %>
+    <% var idx = 0; %>
+    <% posts.each(function(post) { %>
+      <%
+        var size = sizes[idx % sizes.length];
+        var catName = (post.categories && post.categories.length > 0) ? post.categories.data[0].name : '';
+        var fullText = strip_html(post.excerpt || post.content || '');
+        var maxLen = size === 'card-sm' ? 20 : size === 'card-md' ? 60 : size === 'card-lg' ? 120 : 180;
+        var summary = fullText.substring(0, maxLen);
+        var showTags = true;
+      %>
+      <div class="wall-card ajax-link" data-href="<%- url_for(post.path) %>" data-cat="<%= catName %>" data-color-idx="<%= idx % 8 %>">
+        <div class="card-top">
+          <% if (catName) { %>
+            <span class="card-cat badge badge-xs"><%= catName %></span>
+          <% } %>
+          <span class="card-date"><%= date(post.date, 'YYYY-MM-DD') %></span>
+        </div>
+        <h3 class="card-title"><%= post.title %></h3>
+        <p class="card-summary"><%= summary %><%= fullText.length > maxLen ? '...' : '' %></p>
+        <% if (showTags && post.tags && post.tags.length > 0) { %>
+          <div class="card-tags">
+            <% post.tags.forEach(function(tag) { %>
+              <span class="badge badge-ghost badge-xs">#<%= tag.name %></span>
+            <% }); %>
+          </div>
+        <% } %>
+      </div>
+      <% idx++; %>
+    <% }); %>
+
+    <% if (site.posts.length === 0) { %>
+      <div class="list-empty" style="column-span:all;">还没有文章哦，快去写一篇吧～</div>
+    <% } %>
+    </div>
+    </div>
+  </div>
+</div>

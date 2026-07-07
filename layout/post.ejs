@@ -1,0 +1,105 @@
+<% var showToc = theme.post && theme.post.show_toc !== false; %>
+<% if (showToc) {
+  var tocHtml = toc(page.content, { class: 'post-toc-list', list_number: false, max_depth: 3, min_depth: 2 });
+  var hasToc = tocHtml && tocHtml.replace(/\s/g,'').length > 0 && tocHtml.indexOf('<ol') !== -1;
+} else { var tocHtml = ''; var hasToc = false; } %>
+<% if (showToc && hasToc) { %>
+<aside class="post-toc-wrap" id="post-toc-wrap">
+  <div class="post-toc-inner">
+    <div class="post-toc-head">
+      <span><i class="fas fa-list-ul"></i> 目录</span>
+      <button class="post-toc-toggle" id="post-toc-toggle" title="收起/展开"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="post-toc-body" id="post-toc-body">
+      <%- tocHtml %>
+    </div>
+  </div>
+</aside>
+<button class="post-toc-fab" id="post-toc-fab" title="目录" style="display:none;"><i class="fas fa-list-ul"></i></button>
+<% } %>
+
+<div class="page-container">
+  <div class="page-body">
+    <div class="page-header">
+      <h2><%= page.title %></h2>
+    </div>
+    <div class="page-content">
+      <div class="article-header">
+        <div class="post-meta">
+          <i class="fas fa-calendar-days"></i>
+          <span><%= date(page.date, 'YYYY-MM-DD HH:mm') %></span>
+          <% if (page.updated && String(page.updated) !== String(page.date)) { %>
+            <span>·</span>
+            <i class="fas fa-pen-to-square"></i>
+            <span><%= date(page.updated, 'YYYY-MM-DD HH:mm') %></span>
+          <% } %>
+          <% if (page.categories && page.categories.length > 0) { %>
+            <span>·</span>
+            <i class="fas fa-folder"></i>
+            <% page.categories.forEach(function(cat, i) { %>
+              <a class="ajax-link" data-href="<%- url_for(cat.path) %>"><%= cat.name %></a><%= i < page.categories.length - 1 ? ', ' : '' %>
+            <% }); %>
+          <% } %>
+          <%
+            /* 计算字数：去除 HTML 标签后统计字符数（中文按字、英文按词）*/
+            var rawText = (page.content || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+            var cnChars = (rawText.match(/[\u4e00-\u9fa5]/g) || []).length;
+            var enWords = (rawText.replace(/[\u4e00-\u9fa5]/g, ' ').match(/\b\w+\b/g) || []).length;
+            var wordCount = cnChars + enWords;
+            /* 预估阅读时间：中文 300 字/分钟，英文 200 词/分钟 */
+            var readMin = Math.max(1, Math.ceil(cnChars / 300 + enWords / 200));
+          %>
+          <span>·</span>
+          <i class="fas fa-pen-fancy"></i>
+          <span><%= wordCount %> 字</span>
+          <span>·</span>
+          <i class="fas fa-clock"></i>
+          <span>约 <%= readMin %> 分钟</span>
+        </div>
+        <% if (page.tags && page.tags.length > 0) { %>
+          <div class="article-tags">
+            <% page.tags.forEach(function(tag) { %>
+              <a class="badge badge-outline badge-primary badge-sm ajax-link" data-href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+            <% }); %>
+          </div>
+        <% } %>
+      </div>
+      <div class="article-content" id="post-content">
+        <%- page.content %>
+      </div>
+      <%
+        /* 版权声明：post.copyright === false 可对单篇文章关闭 */
+        var showCopyright = theme.post && theme.post.copyright !== false && page.copyright !== false;
+      %>
+      <% if (showCopyright) { %>
+      <div class="post-copyright">
+        <div class="post-copyright-title">
+          <i class="fas fa-shield-halved"></i>
+          <span>版权声明</span>
+        </div>
+        <div class="post-copyright-body">
+          <p>本文作者：<strong><%= theme.author || config.author || '佚名' %></strong></p>
+          <% var rawLink = (config.url || '').replace(/\/$/, '') + url_for(page.path); %>
+          <p>本文链接：<a class="post-copyright-link" href="<%- url_for(page.path) %>" data-href="<%- url_for(page.path) %>"><%= decodeURIComponent(rawLink) %></a></p>
+          <p>转载请注明出处。商业转载请联系作者授权，非商业转载请注明来源。</p>
+        </div>
+      </div>
+      <% } %>
+      <div class="article-nav">
+        <% if (page.prev) { %>
+          <a class="nav-prev ajax-link" data-href="<%- url_for(page.prev.path) %>">
+            <i class="fas fa-chevron-left"></i>
+            <span><%= page.prev.title %></span>
+          </a>
+        <% } else { %><div></div><% } %>
+        <% if (page.next) { %>
+          <a class="nav-next ajax-link" data-href="<%- url_for(page.next.path) %>">
+            <span><%= page.next.title %></span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        <% } %>
+      </div>
+      <%- partial('_partial/comments') %>
+    </div>
+  </div>
+</div>
