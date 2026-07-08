@@ -13,6 +13,16 @@ avatar_type: "image"
 avatar_url: "https://q1.qlogo.cn/g?b=qq&nk=2502393029&s=100"
 avatar_text: "屿"
 
+# ====== 社交链接 ======
+# 在首页"我的主页"窗口显示的社交按钮，留空则不显示
+# type: github / email / qq / wechat / twitter / bilibili / zhihu / link
+# url: 链接地址（email 用 mailto: 前缀，QQ 用 tencent://message/?uin= 前缀）
+# label: 鼠标悬停提示文字
+social:
+  - { type: "github", url: "https://github.com/s-Ruthless", label: "GitHub" }
+  - { type: "email", url: "mailto:2502393029@qq.com", label: "邮箱" }
+  - { type: "qq", url: "tencent://message/?uin=2502393029&Site=&Menu=yes", label: "QQ" }
+
 # ====== SEO / 站点元信息 ======
 # favicon: 自定义 favicon 路径，留空则使用 favicon_emoji 的 emoji 图标
 # favicon_emoji: 默认 emoji favicon
@@ -161,7 +171,7 @@ douban:
 # ====== 壁纸设置 ======
 # wallpaper_path: 自定义壁纸图片路径，为空则使用默认渐变
 # 示例: "/assets/images/my-bg.jpg" 或 "https://example.com/bg.jpg"
-wallpaper_path: "https://img.netbian.com/file/2024/0525/001431sFPe6.jpg"
+wallpaper_path: "/assets/img/background.webp"
 
 # ====== 评论系统 ======
 # enable: false 关闭；true 开启
@@ -183,7 +193,13 @@ comments:
   # Giscus: https://giscus.app/
   # inputPosition: top 评论框在上 / bottom 评论框在下
   # reactionsEnabled: 1 开启表情反应 / 0 关闭
-  # 主题会根据站点暗黑模式自动切换 noborder_dark / noborder_light，无需手动配置
+  # theme_light / theme_dark: Giscus 内置主题名，暗黑模式自动切换
+  #   可选值: light / light_high_contrast / light_protanopia / light_tritanopia
+  #          dark / dark_high_contrast / dark_protanopia / dark_tritanopia / dark_dimmed
+  #          transparent_dark / noborder_light / noborder_dark / noborder_gray
+  #          preferred_color_scheme / cobalt / purple_dark / gruvbox / gruvbox_dark / gruvbox_light
+  #   也支持自定义 CSS URL（需部署在支持 CORS 的服务器上，如 jsDelivr CDN）
+  #   详见: https://giscus.app/  Theme 部分
   giscus:
     repo: "s-Ruthless/moeMac-comments"                # owner/repo
     repoId: "R_kgDOTPRTtA"
@@ -191,8 +207,9 @@ comments:
     categoryId: "DIC_kwDOTPRTtM4DAnxQ"
     mapping: "pathname"
     inputPosition: "top"
-    theme: "preferred_color_scheme"
     reactionsEnabled: 0
+    theme_light: "noborder_light"                     # 亮色模式主题
+    theme_dark: "noborder_dark"                       # 暗黑模式主题
   # Gitalk: https://github.com/gitalk/gitalk
   gitalk:
     clientID: ""
@@ -200,6 +217,14 @@ comments:
     repo: ""
     owner: ""
     admin: [""]
+  # CWD: https://cwd.js.org/  基于 Cloudflare Workers 的评论系统
+  # apiBaseUrl: 你的 CWD API 地址（Cloudflare Workers 部署后的地址）
+  # siteId: 站点标识，用于多站点数据隔离（推荐配置）
+  # lang: 评论组件语言，auto 自动检测浏览器语言
+  cwd:
+    apiBaseUrl: "https://cwd-api.2502393029.workers.dev"
+    siteId: "blog"
+    lang: "auto"
 
 # ====== 搜索 ======
 # 需安装 hexo-generator-searchdb 插件：npm i hexo-generator-searchdb
