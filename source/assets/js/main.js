@@ -1,17 +1,51 @@
 /**
  * moeMac Theme - Main JavaScript
  */
+/* 全局防重复执行守卫 — 荣耀等浏览器可能不支持 defer 导致脚本重复加载 */
+if (window.__moeMacMainLoaded) {
+  /* 已加载过，跳过所有初始化 */
+} else {
+window.__moeMacMainLoaded = true;
 (function () {
   'use strict';
 
   /* ====== 移动端检测 ====== */
   var MOBILE_BP = 768;
+  /* 多层检测：UA + 触摸能力 + 屏幕物理宽度 + userAgentData + ontouchstart，确保各种浏览器都能正确识别 */
+  var _uaMobile = (function(){
+    var ua = navigator.userAgent || navigator.vendor || '';
+    /* 标准 Android 手机、iPhone */
+    if (/Android.*Mobile|iPhone|iPod/i.test(ua)) return true;
+    /* 荣耀/华为手机：部分 UA 不含 'Mobile'，增加 HarmonyOS/ArkWeb 匹配 */
+    if (/Android/i.test(ua) && /Honor|HWV|HUAWEI|HonorBrowser|HarmonyOS|ArkWeb/i.test(ua)) return true;
+    /* 触摸设备 + 无 hover + 屏幕宽度 ≤900 */
+    var hasTouch = (navigator.maxTouchPoints || 0) > 0 || ('ontouchstart' in window);
+    var coarsePointer = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+    var noHover = window.matchMedia && window.matchMedia('(hover:none)').matches;
+    var smallScreen = window.innerWidth <= 900 || (screen.width <= 900 && screen.height <= 900);
+    if ((hasTouch || coarsePointer) && smallScreen) return true;
+    /* userAgentData API — 现代浏览器检测 */
+    if (navigator.userAgentData && navigator.userAgentData.mobile) return true;
+    /* 物理屏幕宽度兜底：手机物理屏幕通常 ≤500 CSS px */
+    if (screen.width <= 500) return true;
+    /* 终极兜底：有触摸 + 无 hover 能力 = 移动设备 */
+    if (('ontouchstart' in window) && !window.matchMedia('(hover:hover)').matches) return true;
+    return false;
+  })();
   function isMobile() {
-    return window.innerWidth <= MOBILE_BP;
+    return _uaMobile || window.innerWidth <= MOBILE_BP;
   }
-  /* 尽早同步 is-mobile class（与 head.ejs 早期脚本配合） */
+  /* 同步移动端/桌面端 class（与 head.ejs 早期脚本配合）
+     关键：一定设一个，is-mobile 或 is-desktop，不能两个都没有 */
   function syncMobileClass() {
-    document.documentElement.classList.toggle('is-mobile', isMobile());
+    var html = document.documentElement;
+    if (isMobile()) {
+      html.classList.add('is-mobile');
+      html.classList.remove('is-desktop');
+    } else {
+      html.classList.add('is-desktop');
+      html.classList.remove('is-mobile');
+    }
   }
 
   /* ====== Progress Bar ====== */
@@ -741,6 +775,9 @@
       var input = document.getElementById('search-input');
       var clear = document.getElementById('search-clear');
       if (!trig || !modal) return;
+      /* 防重复绑定 — 荣耀等浏览器可能重复执行脚本 */
+      if (trig.dataset.searchInit) return;
+      trig.dataset.searchInit = '1';
       var self = this;
 
       function open() {
@@ -868,8 +905,9 @@
       } catch (e) { console.warn('[cleanup] CWD unmount:', e); }
       window.__cwdInstance = null;
     }
-    /* 重置评论错误处理函数（新页面会重新定义） */
+    /* 重置评论全局回调（新页面会重新定义） */
     window.__commentsShowError = null;
+    window.__commentsHideLoading = null;
   }
 
   /* 重新执行容器内所有 <script> 标签 + 处理 <link> 样式表
@@ -1023,10 +1061,14 @@
       if (isMobile()) {
         document.documentElement.classList.remove('is-desktop');
         document.body.classList.remove('is-desktop');
+        document.documentElement.classList.add('is-mobile');
         return;
       }
+      /* 非移动端：一定设 is-desktop，不管有没有 .drag-win
+         .drag-win 仅用于首页锁定滚动，不影响其他页面的桌面端布局 */
+      document.documentElement.classList.add('is-desktop');
+      document.documentElement.classList.remove('is-mobile');
       var hasDesktop = !!document.querySelector('.drag-win');
-      document.documentElement.classList.toggle('is-desktop', hasDesktop);
       document.body.classList.toggle('is-desktop', hasDesktop);
     }
   };
@@ -1088,6 +1130,8 @@
   /* ====== 暗黑模式切换 ====== */
   var ThemeToggle = {
     init: function () {
+      /* 防重复创建 — 荣耀等浏览器可能重复执行脚本 */
+      if (document.querySelector('.theme-toggle')) return;
       /* 从 localStorage 读取主题偏好 */
       var saved = localStorage.getItem('theme');
       if (saved === 'dark') {
@@ -1284,7 +1328,10 @@
   };
 
   /* ====== Init ====== */
-  document.addEventListener('DOMContentLoaded', function () {
+  /* 荣耀等浏览器可能不支持 defer，脚本可能在 DOMContentLoaded 之后才加载
+     此时 addEventListener('DOMContentLoaded') 永远不会触发，导致所有 init 不执行
+     必须检查 readyState：如果 DOM 已就绪就直接执行，否则等事件 */
+  function bootInit(){
     _scanLoadedScripts(); /* 记录初始页面加载的所有外部脚本，供 execScripts 去重 */
     syncMobileClass(); /* 确保移动端 class 与当前视口一致 */
     ProgressBar.init(); WinMgr.init(); Drag.init(); WallFilter(); Nav.init();
@@ -1317,5 +1364,13 @@
         }
       }, 300);
     });
-  });
+  }
+  /* 如果 DOM 已就绪就直接执行，否则等 DOMContentLoaded
+     荣耀浏览器不支持 defer 时，脚本可能在 DOMContentLoaded 之后才加载 */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootInit);
+  } else {
+    bootInit();
+  }
 })();
+} /* end else */

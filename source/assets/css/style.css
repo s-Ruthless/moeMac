@@ -86,7 +86,8 @@ body{
   background-attachment:fixed;user-select:none;
   -webkit-user-select:none;
 }
-html.is-desktop,html.is-desktop body{overflow:hidden;}
+/* 首页桌面端禁止滚动（body.is-desktop 仅在首页有 .drag-win 时设置） */
+html.is-desktop body.is-desktop{overflow:hidden;}
 .article-content,.article-content *{user-select:text;-webkit-user-select:text;}
 .about-content,.about-content *{user-select:text;-webkit-user-select:text;}
 .page-body,.page-body *{user-select:text;-webkit-user-select:text;}
@@ -172,7 +173,9 @@ border-color:color-mix(in srgb,var(--accent-color) 35%,transparent);transition:b
 [data-theme="dark"] .win-head-icon{
   background:color-mix(in srgb,var(--accent-color) 18%,transparent);
 }
-.drag-win:not([data-pos]){visibility:hidden;}
+/* 桌面端：未定位的拖拽窗口隐藏等待 JS 布局
+   仅 is-desktop 时隐藏，其余情况默认可见（移动端安全默认） */
+html.is-desktop .drag-win:not([data-pos]){visibility:hidden;}
 .drag-bar{cursor:move;}
 .win-body{padding:8px 16px 16px;overflow:auto;position:relative;z-index:1;}
 
