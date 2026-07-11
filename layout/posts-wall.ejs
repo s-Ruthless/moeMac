@@ -1,11 +1,17 @@
 <%
-  var posts = site.posts.sort('date', -1);
-  var cats = site.categories;
-  var _icon = 'fas fa-newspaper';
-  var _path = (page.path || '').replace(/\/index\.html$/, '').replace(/^\/|\/$/g, '');
-  (theme.dock || []).forEach(function(item){
-    if ((item.page || '').replace(/^\/|\/$/g, '') === _path) _icon = item.icon;
+  var posts = site.posts.toArray().sort(function(a, b) {
+    var sd = (b.sticky || 0) - (a.sticky || 0);
+    if (sd !== 0) return sd;
+    return b.date - a.date;
   });
+  var cats = site.categories;
+  var _icon = "fas fa-newspaper";
+  var _path = (page.path || "").replace(/\/index\.html$/, "").replace(/^\/|\/$/g, "");
+  (theme.dock || []).forEach(function(item){
+    if ((item.page || "").replace(/^\/|\/$/g, "") === _path) _icon = item.icon;
+  });
+  /* 分类图标统一使用文件夹样式 */
+  var catIcon = 'fas fa-folder';
 %>
 
 <div class="page-container">
@@ -14,47 +20,55 @@
       <h2><i class="<%- _icon %>"></i> 全部文章 · <span class="badge badge-primary badge-sm"><%= site.posts.length %></span> 篇</h2>
     </div>
     <div class="page-content">
-    <div class="wall-filter">
-      <button class="filter-btn active" data-cat="all">全部</button>
-      <% cats.sort('name').each(function(cat) { %>
-        <button class="filter-btn" data-cat="<%= cat.name %>"><%= cat.name %> <span class="badge badge-xs"><%= cat.posts.length %></span></button>
-      <% }); %>
+    <div class="wall-toolbar">
+      <div class="wall-filter">
+        <button class="filter-btn active" data-cat="all"><i class="fas fa-folder"></i> 全部</button>
+        <% cats.sort("name").each(function(cat) { %>
+          <button class="filter-btn" data-cat="<%= cat.name %>"><i class="<%= catIcon %>"></i> <%= cat.name %> <span class="badge badge-xs"><%= cat.posts.length %></span></button>
+        <% }); %>
+      </div>
     </div>
     <div class="wall-grid" id="posts-wall-grid">
-    <% var sizes = ['card-sm','card-md','card-lg','card-md','card-sm','card-xl','card-md','card-sm','card-lg','card-md','card-sm','card-lg']; %>
-    <% var idx = 0; %>
-    <% posts.each(function(post) { %>
-      <%
-        var size = sizes[idx % sizes.length];
-        var catName = (post.categories && post.categories.length > 0) ? post.categories.data[0].name : '';
-        var fullText = strip_html(post.excerpt || post.content || '');
-        var maxLen = size === 'card-sm' ? 20 : size === 'card-md' ? 60 : size === 'card-lg' ? 120 : 180;
-        var summary = fullText.substring(0, maxLen);
-        var showTags = true;
-      %>
-      <div class="wall-card ajax-link" data-href="<%- url_for(post.path) %>" data-cat="<%= catName %>" data-color-idx="<%= idx % 8 %>">
-        <div class="card-top">
-          <% if (catName) { %>
-            <span class="card-cat badge badge-xs"><%= catName %></span>
+    <% posts.forEach(function(post) { %>
+        <%
+          var catName = (post.categories && post.categories.length > 0) ? post.categories.data[0].name : "";
+          var fullText = "";
+          try { fullText = strip_html(post.excerpt || post.content || ""); } catch(e) { fullText = (post.excerpt || post.content || "").replace(/<[^>]*>/g, ""); }
+          var summary = fullText.substring(0, 120);
+          var coverImg = post.cover || post.thumbnail || "";
+        %>
+        <div class="wall-card ajax-link<% if (post.sticky) { %> wall-card-sticky<% } %>" data-href="<%- url_for(post.path) %>" data-cat="<%= catName %>" data-title="<%= post.title.toLowerCase() %>">
+          <% if (coverImg) { %>
+            <div class="card-cover">
+              <img src="<%= coverImg %>" alt="<%= post.title %>" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" onerror="this.parentElement.style.display='none'">
+            </div>
           <% } %>
-          <span class="card-date"><%= date(post.date, 'YYYY-MM-DD') %></span>
-        </div>
-        <h3 class="card-title"><%= post.title %></h3>
-        <p class="card-summary"><%= summary %><%= fullText.length > maxLen ? '...' : '' %></p>
-        <% if (showTags && post.tags && post.tags.length > 0) { %>
-          <div class="card-tags">
-            <% post.tags.forEach(function(tag) { %>
-              <span class="badge badge-ghost badge-xs">#<%= tag.name %></span>
-            <% }); %>
+          <div class="card-body">
+            <div class="card-top">
+              <% if (post.sticky) { %>
+                <span class="card-sticky-badge"><i class="fas fa-thumbtack"></i> 置顶</span>
+              <% } %>
+              <% if (catName) { %>
+                <span class="card-cat badge badge-xs"><i class="<%= catIcon %>"></i> <%= catName %></span>
+              <% } %>
+              <span class="card-date"><%= date(post.date, "YYYY-MM-DD") %></span>
+            </div>
+            <h3 class="card-title"><%= post.title %></h3>
+            <p class="card-summary"><%= summary %><%= fullText.length > 120 ? "..." : "" %></p>
+            <% if (post.tags && post.tags.length > 0) { %>
+              <div class="card-tags">
+                <% post.tags.forEach(function(tag) { %>
+                  <span class="badge badge-ghost badge-xs">#<%= tag.name %></span>
+                <% }); %>
+              </div>
+            <% } %>
           </div>
-        <% } %>
-      </div>
-      <% idx++; %>
+        </div>
     <% }); %>
-
-    <% if (site.posts.length === 0) { %>
-      <div class="list-empty" style="column-span:all;">还没有文章哦，快去写一篇吧～</div>
+    <% if (posts.length === 0) { %>
+      <div class="list-empty">还没有文章哦，快去写一篇吧～</div>
     <% } %>
+    </div>
     </div>
     </div>
   </div>

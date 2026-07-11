@@ -1,6 +1,6 @@
 /* ============================================
-   archive.css �?归档/时间轴页专用样式
-   包含：统计看板、柱状图、年份折叠、文章列�?
+   archive.css — 归档/时间轴页专用样式
+   包含：统计看板、柱状图、年份折叠、文章列表
    ============================================ */
 
 /* ====== 归档页面容器 ====== */
@@ -39,10 +39,9 @@
   background:var(--card-bg);border:var(--card-border);box-shadow:var(--card-shadow);
   position:relative;overflow:hidden;
   transition:transform var(--duration-slow) ease,box-shadow var(--duration-slow) ease;
-  transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;
 }
 .stat-hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.stat-hero-card:hover{transform:translateY(-3px) translateZ(0);box-shadow:0 8px 30px rgba(0,0,0,0.1);}
+.stat-hero-card:hover{box-shadow:0 8px 30px rgba(0,0,0,0.1),0 0 0 2px color-mix(in srgb,var(--accent-color) 30%,transparent);}
 .stat-hero-posts{background:var(--card-bg);}
 .stat-hero-posts::before{background:linear-gradient(90deg,#ff6b6b,#ffa36b);}
 .stat-hero-cats{background:var(--card-bg);}
@@ -142,6 +141,10 @@
   max-height: 0;
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* 折叠状态下：清除 padding 和 pointer-events，防止 hover 残留 */
+.archive-year-header:not(.expanded) + .archive-year-content{
+  padding-top:0;padding-bottom:0;pointer-events:none;
+}
 
 .archive-row{
   display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;
@@ -213,7 +216,4 @@
 [data-theme="dark"] .chart-point-label{fill:#c8c8c8;}
 [data-theme="dark"] .chart-line-svg line[stroke="rgba(0,0,0,0.06)"]{stroke:rgba(255,255,255,0.08);}
 
-/* 确保展开状态的年份内容有足够的高度 */
-.archive-year-header.expanded + .archive-year-content {
-  max-height: 2000px; /* 足够大的值以容纳内容 */
-}
+/* 确保展开状态的年份内容有足够的高度 — 由 JS scrollHeight 动态控制 */
