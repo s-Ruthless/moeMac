@@ -1,5 +1,30 @@
 # 更新日志
 
+## v2.1.0 (2026-07-12)
+
+### 性能优化
+
+- **Lighthouse 性能大幅提升** — 非首屏 CSS 异步加载（`media="print" onload`），KaTeX / APlayer / Mermaid JS 按需懒加载，LCP 图片（头像、壁纸）`preload` 预加载，Masonry 核心 JS 预加载
+- **Masonry 布局安全网** — 添加 CSS `load` 事件监听和 `window.load` 重排，确保异步 CSS 加载后瀑布流正确布局
+
+### Bug 修复
+
+- **归档折叠抖动** — 将 `max-height` 动画改为 CSS Grid `grid-template-rows` 动画，消除移动端折叠时的屏幕抖动
+- **移动端 Dock Tooltip 遮挡** — 移动端移除 Dock hover 提示，JS 跳过事件绑定
+- **移动端封面图非正方形** — 固定文章列表卡片封面图高度为 90px
+- **Postcard 卡片布局** — 缩略图固定 100×100 正方形，消除多卡片模式下图片下方空白
+- **豆瓣卡片 hover 模糊** — 添加 `will-change: transform` 和 `backface-visibility: hidden`，修复字体模糊和图片卡顿
+- **豆瓣电影评分抓取** — 优先获取个人评分，回退社区评分，修正 `allstarXX` 转换公式，支持 `data-rating` 新格式
+- **画廊 JS 加载延迟** — 优化 `initGallery` 初始化时序，使用 `requestAnimationFrame` 确保 DOM 渲染后正确布局
+- **文章列表页卡片错位** — 关键布局 CSS `pages.css` 改回同步加载，避免 Masonry 计算错误
+
+### 变更
+
+- **豆瓣页面移除音乐模块** — 从模板和抓取脚本中移除音乐相关逻辑
+- **KaTeX / APlayer 懒加载** — 仅检测到数学公式 / 音乐播放器时才加载对应 JS
+
+---
+
 ## v2.0.0 (2026-07-12)
 
 ### 重磅更新
