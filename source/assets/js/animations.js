@@ -52,7 +52,8 @@
   var ALL_ANIM_CLASSES = [
     'anim-fade-up', 'anim-fade-in', 'anim-scale-in', 'anim-slide-left',
     'anim-slide-right', 'anim-flip-in', 'anim-zoom-in', 'anim-bounce-in',
-    'anim-rotate-in', 'anim-dock-up', 'anim-slide-down', 'anim-win-fade', 'anim-win-scale', 'anim-win-slide', 'anim-win-flip'
+    'anim-rotate-in', 'anim-dock-up', 'anim-slide-down', 'anim-win-fade', 'anim-win-scale', 'anim-win-slide', 'anim-win-flip',
+    'heading-h1', 'heading-h2', 'heading-h3', 'heading-h4', 'heading-h5', 'heading-h6'
   ];
 
   var Animations = {
@@ -60,13 +61,15 @@
 
     /** 清除旧动画状态 */
     killAll: function () {
-      var sels = '.post-list-item,.wall-card,.archive-row,.archive-year-header,.article-header,.article-content,.article-nav,.page-header,.dock-bar,.win-traffic-btn,.dock-item-inner,#galleryMasonry .gallery-item,.douban-card,.flink-card,.link-card,.stat-hero-card,.cat-item,.tag,.search-item';
+      var sels = '.post-list-item,.wall-card,.archive-row,.archive-year-header,.article-header,.article-content,.article-nav,.page-header,.dock-bar,.win-traffic-btn,.dock-item-inner,#galleryMasonry .gallery-item,.douban-card,.flink-card,.link-card,.stat-hero-card,.cat-item,.tag,.search-item,.article-content h1,.article-content h2,.article-content h3,.article-content h4,.article-content h5,.article-content h6';
       var winSels = '';
       if (document.documentElement.classList.contains('is-desktop')) {
         winSels = '.app-window,';
       }
       var els = document.querySelectorAll(winSels + sels);
       els.forEach(function (el) {
+        /* 跳过折叠组内的归档行 — 由 toggleYear 接管动画 */
+        if (el.classList.contains('archive-row') && el.closest('.archive-year-content')) return;
         ALL_ANIM_CLASSES.forEach(function (cls) { el.classList.remove(cls); });
         el.style.animationDelay = '';
         el.style.animation = '';
@@ -186,9 +189,11 @@
       });
 
       /* 文章列表 / 归档行：IntersectionObserver，统一使用 fade-up（opacity+translateY）
-         避免水平位移动画导致卡片重叠、间距不均匀 */
+         避免水平位移动画导致卡片重叠、间距不均匀
+         归档行在折叠组内的不注册 IO — 由 toggleYear 展开时手动动画，避免两套动画冲突 */
       var listCards = document.querySelectorAll('.post-list-item, .archive-row');
       listCards.forEach(function (card, i) {
+        if (card.closest('.archive-year-content')) return;
         observe(card, 'anim-fade-up', (i % 10) * 60);
       });
     },
@@ -301,6 +306,24 @@
       });
     },
 
+    /** 文章标题分级入场动画 — h1 最强 → h6 最弱，滚入可视区时触发 */
+    headings: function () {
+      var headings = document.querySelectorAll('.article-content h1, .article-content h2, .article-content h3, .article-content h4, .article-content h5, .article-content h6');
+      var animMap = {
+        'H1': 'heading-h1',
+        'H2': 'heading-h2',
+        'H3': 'heading-h3',
+        'H4': 'heading-h4',
+        'H5': 'heading-h5',
+        'H6': 'heading-h6'
+      };
+      headings.forEach(function (h) {
+        var animClass = animMap[h.tagName];
+        if (!animClass) return;
+        observe(h, animClass, 0);
+      });
+    },
+
     /** 运行全部动画 */
     run: function () {
       document.body.classList.add('animating');
@@ -314,6 +337,7 @@
       this.postPage();
       this.pageHeader();
       this.articleImages();
+      this.headings();
       this.galleryItems();
       this.doubanCards();
       this.flinkCards();
@@ -327,11 +351,14 @@
         UIEnhance.clipReveal();
         UIEnhance.heroEffects();
       }
-      /* 安全超时：1.5s 后强制清理所有残留动画类和内联样式（防止 animationend 未触发） */
+      /* 安全超时：1.5s 后强制清理所有残留动画类和内联样式（防止 animationend 未触发）
+         跳过折叠组内的归档行 — 它们由 toggleYear 管理，不参与 IO 动画 */
       setTimeout(function () {
         document.body.classList.remove('animating');
-        var sels = '.post-list-item,.wall-card,.archive-row,.archive-year-header,.article-header,.article-content,.article-nav,.page-header,.dock-bar,.app-window,#galleryMasonry .gallery-item,.douban-card,.flink-card,.link-card,.stat-hero-card,.cat-item,.tag,.search-item';
+        var sels = '.post-list-item,.wall-card,.archive-row,.archive-year-header,.article-header,.article-content,.article-nav,.page-header,.dock-bar,.app-window,#galleryMasonry .gallery-item,.douban-card,.flink-card,.link-card,.stat-hero-card,.cat-item,.tag,.search-item,.article-content h1,.article-content h2,.article-content h3,.article-content h4,.article-content h5,.article-content h6';
         document.querySelectorAll(sels).forEach(function (el) {
+          /* 跳过折叠组内的归档行 — 由 toggleYear 接管动画 */
+          if (el.classList.contains('archive-row') && el.closest('.archive-year-content')) return;
           ALL_ANIM_CLASSES.forEach(function (cls) { el.classList.remove(cls); });
           el.style.opacity = '';
           el.style.transform = '';
